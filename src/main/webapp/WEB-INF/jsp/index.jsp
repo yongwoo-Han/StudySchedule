@@ -10,25 +10,48 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="/webjars/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container">
         <header>
             <p>Header 영역</p>
         </header>
-        <nav>
-            <p>네비게이션 영역</p>
-            <ul>
-                <li><a href="">수강신청</a></li>
-                <li><a href="">수강신청 캘린더</a></li>
-                <li><a href="">수강신청 리스트</a></li>
-            </ul>
-        </nav>
+       	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		  <a class="navbar-brand" href="#">Navbar</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		  </button>
+		  <div class="collapse navbar-collapse" id="navbarNav">
+		    <ul class="navbar-nav">
+		      <li class="nav-item active">
+		        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link" href="#">Features</a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link" href="#">Pricing</a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link disabled" href="#">Disabled</a>
+		      </li>
+		    </ul>
+		  </div>
+		</nav>
         <section>
             <p>본문 영역 : 게시판 페이징 처리</p>
             <article>
-                실제 내용 들어갈 부분
+                <table class="table">
+                	<thead>
+                	<tr>
+                		<th>번호</th>
+                	</tr>
+                	<tr>
+                		<td>1</td>
+                	</tr>
+                	
+                </table>
             </article>
         </section>
     </div>
