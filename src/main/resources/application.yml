@@ -3,3 +3,19 @@ spring:
     view:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
+  devtools:
+    livereload:
+      enabled: true
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://google/studydbms?cloudSqlInstance=studyscheduleproject:us-central1:studydbms&socketFactory=com.google.cloud.sql.mysql.SocketFactory&useSSL=false&username=root&password=J4JO8pJn0bzmbj5m
+#    username: root
+#    password: J4JO8pJn0bzmbj5m
+   
+
+mybatis:
+  mapper-locations:
+  - classpath:sqlmapper/*.xml
+  
+
+
