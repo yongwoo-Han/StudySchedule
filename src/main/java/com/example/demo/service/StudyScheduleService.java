@@ -14,7 +14,17 @@ public class StudyScheduleService {
 	@Autowired
 	private StudyScheduleMapper studyScheduleMapper;
 
+	/**
+	 * 과목 리스트
+	 */
 	public List<Map<String, Object>> searchSubjectList() {
 		return studyScheduleMapper.searchSubjectList();
+	}
+	
+	/**
+	 * 유저별 수강신청 리스트
+	 */
+	public List<Map<String, Object>> searcSubjectForUserList() {
+		return studyScheduleMapper.searcSubjectForUserList();
 	}
 }

@@ -62,7 +62,7 @@ Main Components
 
 @media only screen and (min-width: 800px) {
   .cd-schedule .timeline {
-    display: block;
+    display: block;₩
     position: absolute;
     top: 0;
     left: 0;
@@ -214,7 +214,7 @@ Main Components
     margin-bottom: 0;
   }
   .cd-schedule .events .events-group > ul {
-    height: 950px;
+    height: 600px;
     /* reset style */
     display: block;
     overflow: visible;
@@ -604,4 +604,9 @@ Main Components
 .cd-schedule.modal-is-open .cover-layer {
   opacity: 1;
   visibility: visible;
+}
+
+section {
+	padding: 10px;
+    margin-top: 20px;
 }

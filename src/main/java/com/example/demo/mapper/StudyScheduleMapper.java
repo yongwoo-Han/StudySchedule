@@ -9,4 +9,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface StudyScheduleMapper {
 	
 	public List<Map<String, Object>> searchSubjectList();
+	public List<Map<String, Object>> searcSubjectForUserList();
 }

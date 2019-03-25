@@ -1,20 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core"              prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html lang="en" class="no-js">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" rel="stylesheet">
 	<link rel="stylesheet" href="<c:url value='/css/reset.css'/>" /> <!-- CSS reset -->
 	<link rel="stylesheet" href="<c:url value='/css/style.css'/>" /> <!-- Resource style -->
 	<link rel="stylesheet" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
-<div class="cd-schedule loading">
 	<div class="container">
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		  <a class="navbar-brand" href="#">Home</a>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		  <a class="navbar-brand" href="#">Navbar</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 		    <span class="navbar-toggler-icon"></span>
 		  </button>
@@ -24,7 +22,7 @@
 		        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link" href="#">Features</a>
+		        <a class="nav-link" href="#" id="sheduleList">Features</a>
 		      </li>
 		      <li class="nav-item">
 		        <a class="nav-link" href="#">Pricing</a>
@@ -36,9 +34,10 @@
 		  </div>
 		</nav>
 	</div>
+<div class="cd-schedule loading">
 	<div class="timeline">
 		<ul>
-			<li><span style="padding-top: 70px">1교시<br>(9:00 ~ 9:50)</span></li>
+			<li><span>1교시<br>(9:00 ~ 9:50)</span></li>
 			<li><span>2교시<br>(10:00 ~ 10:50)</span></li>
 			<li><span>3교시<br>(11:00 ~ 11:50)</span></li>
 			<li><span>4교시<br>(12:00 ~ 12:50)</span></li>
@@ -125,8 +124,6 @@
 
 	<div class="cover-layer"></div>
 </div> <!-- .cd-schedule -->
-<!-- <script src="js/modernizr.js"></script> -->
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script> -->
 <script src="/webjars/jquery/3.3.1-2/jquery.min.js"></script>
 <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
@@ -134,6 +131,5 @@
 		console.log("schedule List");
 	});
 </script>
-<script src="js/main.js"></script> <!-- Resource jQuery -->
 </body>
 </html>

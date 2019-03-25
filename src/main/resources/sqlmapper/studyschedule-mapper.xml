@@ -6,7 +6,7 @@
 <mapper namespace="com.example.demo.mapper.StudyScheduleMapper">
         
     <select id="searchSubjectList" resultType="Map">
-        select * from H_SUBJECT
+        SELECT * FROM H_SUBJECT
     </select>
     
 </mapper>

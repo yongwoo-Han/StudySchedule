@@ -15,17 +15,18 @@ public class StudyScheduleController {
 
 	@RequestMapping(value = "/")
 	public String hello() {
-		return "index";
+		return "enrolment";
 	}
 	
-	@RequestMapping(value = "index")
+	@RequestMapping(value = "enrolment")
 	public ModelAndView indexPage() {
-		return new ModelAndView();
+		ModelAndView mav = new ModelAndView();
+		return mav;
 	}
 	
 	@RequestMapping(value = "scheduleList")
 	public ModelAndView scheduleList() {
-		System.out.println(studyScheduleService.searchSubjectList());
+//		System.out.println(studyScheduleService.searchSubjectList());
 		return new ModelAndView();
 	}
 }
