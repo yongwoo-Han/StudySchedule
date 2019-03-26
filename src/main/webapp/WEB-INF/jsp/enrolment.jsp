@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -102,12 +102,16 @@
                 		<th>시간</th>
                 		<th>학점</th>
                 	</tr>
-                	<tr>
-                		<td><span style=""><input type="checkbox" disabled/>&nbsp;1</span></td>
-                		<td>전자기학</td>
-                		<td>1교시 (9:00 ~ 9:50)</td>
-                		<td>3학점</td>
-                	</tr>
+                	<c:forEach var="item" items="${scheduleList}" varStatus="status">
+                		<c:if test="${item.SEQ eq item.}">
+	                		<tr>
+		                		<td><span style=""><input type="checkbox" disabled/>&nbsp;1</span></td>
+		                		<td>전자기학</td>
+		                		<td>1교시 (9:00 ~ 9:50)</td>
+		                		<td>3학점</td>
+	                		</tr>
+                		</c:if>
+                	</c:forEach>
                 </table>
             </article>
             <!-- 페이징 처리 -->
