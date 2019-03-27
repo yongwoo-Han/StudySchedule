@@ -17,8 +17,8 @@ public class StudyScheduleService {
 	/**
 	 * 과목 리스트
 	 */
-	public List<Map<String, Object>> searchSubjectList() {
-		return studyScheduleMapper.searchSubjectList();
+	public List<Map<String, Object>> searchSubjectList(Map<String, Object> param) {
+		return studyScheduleMapper.searchSubjectList(param);
 	}
 	
 	/**

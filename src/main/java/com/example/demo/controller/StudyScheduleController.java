@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.service.StudyScheduleService;
@@ -24,9 +27,11 @@ public class StudyScheduleController {
 		return mav;
 	}
 	
-	@RequestMapping(value = "scheduleList")
-	public ModelAndView scheduleList() {
-//		System.out.println(studyScheduleService.searchSubjectList());
-		return new ModelAndView();
+	@RequestMapping(value = "schedule")
+	public ModelAndView scheduleList(@RequestParam Map<String, Object> param) {
+		ModelAndView mav = new ModelAndView();
+		System.out.println(studyScheduleService.searchSubjectList(param));
+		mav.addObject("subjectList", studyScheduleService.searchSubjectList(param));
+		return mav;
 	}
 }

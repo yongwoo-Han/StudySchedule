@@ -5,8 +5,49 @@
     
 <mapper namespace="com.example.demo.mapper.StudyScheduleMapper">
         
-    <select id="searchSubjectList" resultType="Map">
-        SELECT * FROM H_SUBJECT
+    <select id="searchSubjectList" resultType="Map" parameterType="Map">
+    	select * from H_SUBJECT
+<!--     		SELECT -->
+<!-- 				A.SEQ  -->
+<!-- 				,SUBJECT_NAME -->
+<!-- 				,SUBJECT_GRADE -->
+<!-- 				,GRP_SEQ -->
+<!-- 				,GRADE -->
+<!-- 				,DAYS AS ORG_DAYS -->
+<!-- 				,CASE WHEN B.`DAYS` = 1 THEN '월' -->
+<!-- 					WHEN B.`DAYS` = 2 THEN '화' -->
+<!-- 					WHEN B.`DAYS` = 3 THEN '수' -->
+<!-- 					WHEN B.`DAYS` = 4 THEN '목' -->
+<!-- 					WHEN B.`DAYS` = 5 THEN '금' -->
+<!-- 				ELSE '' END AS DAYS -->
+<!-- 			FROM H_SUBJECT A JOIN H_SCHEDULE B  -->
+<!-- 			ON A.SEQ = B.SUBJECT_SEQ -->
+<!-- 			ORDER BY SUBJECT_NAME, GRP_SEQ, ORG_DAYS, GRADE -->
+    	
+<!--         SELECT -->
+<!-- 			SUBJECT_NAME -->
+<!-- 			,GROUP_CONCAT(CONCAT(DAYS,GRADE) ORDER BY CONCAT(ORG_DAYS,GRADE)) AS DAYSANDGRADE -->
+<!-- 			,R.SUBJECT_GRADE -->
+<!-- 			,R.SEQ -->
+<!-- 		FROM( -->
+<!-- 			SELECT -->
+<!-- 				A.SEQ  -->
+<!-- 				,SUBJECT_NAME -->
+<!-- 				,SUBJECT_GRADE -->
+<!-- 				,GRP_SEQ -->
+<!-- 				,GRADE -->
+<!-- 				,DAYS AS ORG_DAYS -->
+<!-- 				,CASE WHEN B.`DAYS` = 1 THEN '월' -->
+<!-- 					WHEN B.`DAYS` = 2 THEN '화' -->
+<!-- 					WHEN B.`DAYS` = 3 THEN '수' -->
+<!-- 					WHEN B.`DAYS` = 4 THEN '목' -->
+<!-- 					WHEN B.`DAYS` = 5 THEN '금' -->
+<!-- 				ELSE '' END AS DAYS -->
+<!-- 			FROM H_SUBJECT A JOIN H_SCHEDULE B  -->
+<!-- 			ON A.SEQ = B.SUBJECT_SEQ -->
+<!-- 		) AS R -->
+<!-- 		GROUP BY GRP_SEQ, SUBJECT_NAME, R.SEQ, R.SUBJECT_GRADE -->
+<!-- 		ORDER BY SUBJECT_NAME -->
     </select>
     
 </mapper>
