@@ -27,10 +27,10 @@
 		        <a class="nav-link" href="#">Home</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link" href="#">수강신청</a>
+		        <a class="nav-link" href="javascript:onClickScheduleForward('<c:url value='/enrolment'/>')" id="searchEnrolement">수강신청</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link" href="#">개인시간표</a>
+		        <a class="nav-link" href="javascript:onClickScheduleForward('<c:url value='/schedule'/>')" id="identificationSchedule">개인시간표</a>
 		      </li>
 		    </ul>
 		  </div>
@@ -102,15 +102,13 @@
                 		<th>시간</th>
                 		<th>학점</th>
                 	</tr>
-                	<c:forEach var="item" items="${scheduleList}" varStatus="status">
-                		<c:if test="${item.SEQ eq item.}">
-	                		<tr>
-		                		<td><span style=""><input type="checkbox" disabled/>&nbsp;1</span></td>
-		                		<td>전자기학</td>
-		                		<td>1교시 (9:00 ~ 9:50)</td>
-		                		<td>3학점</td>
-	                		</tr>
-                		</c:if>
+                	<c:forEach var="item" items="${subjectList}" varStatus="status">
+                	<tr>
+                		<td><input type="checkbox"/></td>
+                		<td id="subname">${item.SUBJECT_NAME }</td>
+                		<td id="dayandgrade">${item.DAYSANDGRADE }</td>
+                		<td id="subgrade">${item.SUBJECT_GRADE }학점</td>
+               		</tr>
                 	</c:forEach>
                 </table>
             </article>
@@ -134,11 +132,21 @@
     </div>
     <script src="/webjars/jquery/3.3.1-2/jquery.min.js"></script>
     <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/js/common.js"></script>
     
     <script type="text/javascript">
-	    $(function () {
-	        console.log("jQuery ready");
+		$(function () {
+			console.log("jQuery ready");
 		});
+	    
+		$(document).on('click',':checkbox',function(){
+			var $tdGroup = $(this).parent().siblings();
+			var compareToTime = $tdGroup.find('dayandgrade').split(',');
+		});
+	    
+	    function onClickScheduleForward(url) {
+	   		commonRedirect(url);
+	    }
 	    
     </script>
 </body>

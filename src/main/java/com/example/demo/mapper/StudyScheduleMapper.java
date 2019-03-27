@@ -8,6 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface StudyScheduleMapper {
 	
-	public List<Map<String, Object>> searchSubjectList();
+	public List<Map<String, Object>> searchSubjectList(Map<String, Object> param);
 	public List<Map<String, Object>> searcSubjectForUserList();
 }

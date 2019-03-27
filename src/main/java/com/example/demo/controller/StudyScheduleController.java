@@ -1,8 +1,13 @@
 package com.example.demo.controller;
 
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.service.StudyScheduleService;
@@ -19,14 +24,17 @@ public class StudyScheduleController {
 	}
 	
 	@RequestMapping(value = "enrolment")
-	public ModelAndView indexPage() {
+	public ModelAndView indexPage(@RequestParam Map<String, Object> param) {
 		ModelAndView mav = new ModelAndView();
+		mav.addObject("subjectList", studyScheduleService.searchSubjectList(param));
 		return mav;
 	}
 	
-	@RequestMapping(value = "scheduleList")
+	@RequestMapping(value = "schedule")
 	public ModelAndView scheduleList() {
-//		System.out.println(studyScheduleService.searchSubjectList());
-		return new ModelAndView();
+		ModelAndView mav = new ModelAndView();
+		System.out.println(studyScheduleService.searcSubjectForUserList());
+		mav.addObject("userList", new JSONArray(studyScheduleService.searcSubjectForUserList()));
+		return mav;
 	}
 }
