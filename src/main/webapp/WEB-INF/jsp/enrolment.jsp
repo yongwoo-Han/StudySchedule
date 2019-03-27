@@ -102,8 +102,10 @@
                 		<th>시간</th>
                 		<th>학점</th>
                 	</tr>
-                	<c:forEach var="item" items="${scheduleList}" varStatus="status">
-                		<c:if test="${item.SEQ eq item.}">
+                	<c:forEach var="item" items="${subjectList}" varStatus="status">
+                		<c:if test="${subjectList[status.index+1] ne null 
+                						and subjectList[status.index].SEQ eq subjectList[status.index+1].SEQ 
+                						and subjectList[status.index].GRP_SEQ eq subjectList[status.index+1].GRP_SEQ}">
 	                		<tr>
 		                		<td><span style=""><input type="checkbox" disabled/>&nbsp;1</span></td>
 		                		<td>전자기학</td>

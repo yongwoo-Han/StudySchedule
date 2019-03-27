@@ -7,7 +7,7 @@ spring:
     livereload:
       enabled: true
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://google/studyschedule?cloudSqlInstance=polar-processor-235700:us-central1:studydbms&socketFactory=com.google.cloud.sql.mysql.SocketFactory&useSSL=false
     username: root
     password: J4JO8pJn0bzmbj5m

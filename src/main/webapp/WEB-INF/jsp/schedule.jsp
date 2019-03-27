@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,80 +33,15 @@
 		</nav>
 	</div>
 	<div class="container">
-		<table class="table table-bordered" style="margin-top: 10px;">
-			<thead>
-				<tr align="center">
-					<td width="50"></td>
-					<td>월</td>
-					<td>화</td>
-					<td>수</td>
-					<td>목</td>
-					<td>금</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td></td>
-					<td>전산실무</td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>2</td>
-					<td></td>
-					<td>포토샾</td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>3</td>
-					<td>플레시</td>
-					<td>포토샾</td>
-					<td>플래시</td>
-					<td></td>
-					<td>컴퓨터그래픽</td>
-				</tr>
-				<tr>
-					<td>4</td>
-					<td>플래시</td>
-					<td></td>
-					<td></td>
-					<td>전산개론</td>
-					<td>컴퓨터그래픽</td>
-				</tr>
-				<tr>
-					<td>5</td>
-					<td></td>
-					<td>전산개론</td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>6</td>
-					<td></td>
-					<td>전산개론</td>
-					<td>웹디자인</td>
-					<td></td>
-					<td>웹디자인</td>
-				</tr>
-				<tr>
-					<td>7</td>
-					<td>웹디자인</td>
-					<td></td>
-					<td>웹디자인</td>
-					<td>운영체제</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>8</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td>운영체제</td>
-					<td></td>
-				</tr>
+		<table class="table table-bordered" style="margin-top: 10px;" id="tb">
+			<tr align="center">
+				<td width="50"></td>
+				<td>월</td>
+				<td>화</td>
+				<td>수</td>
+				<td>목</td>
+				<td>금</td>
+			</tr>
 		</table>
 	</div>
 	<script src="/webjars/jquery/3.3.1-2/jquery.min.js"></script>
@@ -114,12 +49,44 @@
     <script src="/js/common.js"></script>
     
     <script>
+    	var userList = JSON.parse('${userList}');
 		$(function() {
+// 			$.each(userList, function(i,v){
+// 				console.log(i+ " , "+v);
+// 			});
+			
+// 			var $tr = document.createElement('tr');
+// 			console.log($tr);
+			drawTableForSchedule();
 		});
 		
 		function onClickScheduleForward(url) {
 	   		commonRedirect(url);
 	    }
+		
+		function drawTableForSchedule() {
+			//console.log(dataList.REGDATE);
+			var days = 5;
+			var grades = 8;
+			var view = "";
+// 			$("#tb").append() // TR 마지막에 붙히며 1 ~ 8 교시까지 검사하면서 TD를 그린다
+			for(var i = 1; i <= grades ; i++) {
+				var tr = document.createElement('tr');
+				var td = document.createElement('td');
+				$(tr).append($(td).append(i));
+				for(var j = 1; j <= days ; j++) {
+					td = document.createElement('td');
+					$.each(userList, function(v,data) {
+						if(data.GRADE == i && data.DAYS == j) {
+							$(td).append(data.SUBJECT_NAME);
+							return false;
+						}
+					});
+					$(tr).append(td);
+				}
+				$("#tb").append(tr);
+			}
+		}
 	
 		
 	// 	$.ajax({
