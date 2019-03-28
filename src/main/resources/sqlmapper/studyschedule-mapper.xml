@@ -7,10 +7,12 @@
         
     <select id="searchSubjectList" resultType="Map" parameterType="Map">
 <!--     	SET @rownum:=0 -->
-    	SELECT
 <!--     		@rownum:=@rownum+1 AS RN -->
+    	SELECT
 			SUBJECT_NAME
 			,GROUP_CONCAT(CONCAT(DAYS,GRADE) ORDER BY CONCAT(ORG_DAYS,GRADE)) AS DAYSANDGRADE
+			,GROUP_CONCAT(CONCAT(ORG_DAYS,GRADE) ORDER BY CONCAT(ORG_DAYS,GRADE)) AS ORG_DAYSANDGRADE
+			,CONCAT(GRP_SEQ,SEQ) AS UNIQUE_GRP_SEQ
 			,R.SUBJECT_GRADE
 			,R.SEQ
 		FROM(
@@ -30,12 +32,104 @@
 			FROM H_SUBJECT A JOIN H_SCHEDULE B 
 			ON A.SEQ = B.SUBJECT_SEQ
 		) AS R
+		WHERE
+			1=1
+			<if test="subjectName != null">
+				AND SUBJECT_NAME LIKE CONCAT(CONCAT('%',#{subjectName}),'%')
+			</if>
+		GROUP BY GRP_SEQ, SUBJECT_NAME, R.SEQ, R.SUBJECT_GRADE
+		ORDER BY SUBJECT_NAME
+    </select>
+    
+    <select id="searchCompareSubjectForUserList" resultType="Map" parameterType="Map">
+    	SELECT 
+			SEQ
+			,NAME
+			,CONCAT(DAYS, GRADE) AS DAYANDGRADE
+			,SUBJECT_GRP_SEQ
+		FROM H_USER
+    </select>
+    
+    <select id="searchEnroleUserlist" resultType="Map" parameterType="Map">
+    	SELECT
+			SUBJECT_NAME
+			,GROUP_CONCAT(CONCAT(DAYS,GRADE) ORDER BY CONCAT(ORG_DAYS,GRADE)) AS DAYSANDGRADE
+			,GROUP_CONCAT(CONCAT(ORG_DAYS,GRADE) ORDER BY CONCAT(ORG_DAYS,GRADE)) AS ORG_DAYSANDGRADE
+			,CONCAT(GRP_SEQ,SEQ) AS UNIQUE_GRP_SEQ
+			,R.SUBJECT_GRADE
+			,R.SEQ
+		FROM(
+			SELECT
+				A.SEQ 
+				,SUBJECT_NAME
+				,SUBJECT_GRADE
+				,GRP_SEQ
+				,GRADE
+				,DAYS AS ORG_DAYS
+				,CASE WHEN B.`DAYS` = 1 THEN '월'
+					WHEN B.`DAYS` = 2 THEN '화'
+					WHEN B.`DAYS` = 3 THEN '수'
+					WHEN B.`DAYS` = 4 THEN '목'
+					WHEN B.`DAYS` = 5 THEN '금'
+				ELSE '' END AS DAYS
+			FROM H_SUBJECT A JOIN (
+				 SELECT DISTINCT
+					B.SUBJECT_SEQ, GRP_SEQ, GRADE, DAYS
+				FROM
+					H_USER A JOIN H_SCHEDULE B
+				ON
+					A.SUBJECT_GRP_SEQ = CONCAT(B.GRP_SEQ, B.SUBJECT_SEQ)
+		) B
+			ON A.SEQ = B.SUBJECT_SEQ
+		) AS R
+		WHERE
+			1=1
 		GROUP BY GRP_SEQ, SUBJECT_NAME, R.SEQ, R.SUBJECT_GRADE
 		ORDER BY SUBJECT_NAME
     </select>
     
     <select id="searcSubjectForUserList" resultType="Map" parameterType="Map">
-    	SELECT * FROM H_USER;
+		SELECT
+			SEQ
+			,CONCAT(DAYS, GRADE) AS DAYANDGRADE
+			,SUBJECT_GRADE
+		FROM H_SUBJECT A JOIN (
+			 SELECT DISTINCT
+				SUBJECT_SEQ, GRP_SEQ, GRADE, DAYS
+			FROM
+				H_USER A JOIN H_SCHEDULE B
+			ON
+				A.SUBJECT_GRP_SEQ = CONCAT(B.GRP_SEQ, B.SUBJECT_SEQ)
+		) B
+		ON A.SEQ = B.SUBJECT_SEQ
     </select>
+    
+    <insert id="successEnrolementSubject" parameterType="Map">
+    	INSERT 
+    	INTO H_USER(
+    		SEQ 
+    		,NAME
+    		,SUBJECT_GRP_SEQ
+    		,SUBJECT_SEQ
+    		,SUBJECT_GRADE
+    	) 
+    	SELECT
+    		COALESCE(MAX(SEQ)+1,1)
+    		,#{name}
+    		,${subjectGrpSeq}
+    		,${subjectSeq}
+    		,${subjectGrade}
+    	FROM
+    		H_USER
+    </insert>
+    
+    <delete id="removeUserSubject" parameterType="Map">
+    	DELETE FROM H_USER WHERE SUBJECT_GRP_SEQ = #{subjectGrpSeq}
+    </delete>
+    
+    <delete id="removeUserSubjectForBefore" parameterType="Map">
+    	DELETE FROM H_USER WHERE SUBJECT_SEQ = #{subjectSeq}
+    </delete>
+    
     
 </mapper>

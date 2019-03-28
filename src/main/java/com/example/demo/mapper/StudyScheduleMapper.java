@@ -10,4 +10,10 @@ public interface StudyScheduleMapper {
 	
 	public List<Map<String, Object>> searchSubjectList(Map<String, Object> param);
 	public List<Map<String, Object>> searcSubjectForUserList();
+	public List<Map<String, Object>> searchCompareSubjectForUserList();
+	public List<Map<String, Object>> searchEnroleUserlist();
+	
+	public void successEnrolementSubject(Map<String, Object> param);
+	public void removeUserSubject(Map<String, Object> param);
+	public void removeUserSubjectForBefore(Map<String, Object> param);
 }
