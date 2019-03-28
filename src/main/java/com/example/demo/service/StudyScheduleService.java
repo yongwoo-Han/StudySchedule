@@ -27,4 +27,36 @@ public class StudyScheduleService {
 	public List<Map<String, Object>> searcSubjectForUserList() {
 		return studyScheduleMapper.searcSubjectForUserList();
 	}
+	
+	/**
+	 * 수강리스트 유저별 비교하기 위한 정보
+	 */
+	public List<Map<String, Object>> searchCompareSubjectForUserList() {
+		return studyScheduleMapper.searchCompareSubjectForUserList();
+	}
+	
+	/**
+	 * 유저 수강목록
+	 * @return
+	 */
+	public List<Map<String, Object>> searchEnroleUserlist() {
+		return studyScheduleMapper.searchEnroleUserlist();
+	}
+	
+	/**
+	 * 수강신청 등록
+	 */
+	public void successEnrolementSubject(Map<String, Object> param) {
+		
+		param.put("name", "admin"); // 사용자 어드민으로 등록 (임시)
+		studyScheduleMapper.successEnrolementSubject(param);
+	}
+	
+	/**
+	 * 내 수강목록에서 삭제
+	 * @param param
+	 */
+	public void removeUserSubject(Map<String, Object> param) {
+		studyScheduleMapper.removeUserSubject(param);
+	}
 }

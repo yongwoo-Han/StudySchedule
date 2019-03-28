@@ -1,6 +1,8 @@
 package com.example.demo.config;
 
-public enum ConstType {
+public class ConstType {
 	
+	public final static String SUCCESS = "SUCCESS";
+	public final static String FAIL = "FAIL";
 	
 }

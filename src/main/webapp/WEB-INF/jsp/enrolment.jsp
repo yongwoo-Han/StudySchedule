@@ -27,10 +27,10 @@
 		        <a class="nav-link" href="#">Home</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link" href="#">수강신청</a>
+		        <a class="nav-link" href="javascript:onClickScheduleForward('<c:url value='/enrolment'/>')" id="searchEnrolement">수강신청</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link" href="#">개인시간표</a>
+		        <a class="nav-link" href="javascript:onClickScheduleForward('<c:url value='/schedule'/>')" id="identificationSchedule">개인시간표</a>
 		      </li>
 		    </ul>
 		  </div>
@@ -38,30 +38,19 @@
         <section>
         	<h4>내 수강목록</h4>
             <article>
-                <table class="table">
+                <table class="table" id="tb">
                 	<thead>
-                	<tr>
-                		<th>과목명</th>
-                		<th>시간</th>
-                		<th>학점</th>
-                	</tr>
-                	<tr>
-                		<td>전자기학</td>
-                		<td>1교시 (9:00 ~ 9:50)</td>
-                		<td>
-                			3학점 <span><button type="button" class="btn btn-danger">취소</button></span>
-                		</td>
-                	</tr>
-                	<tr>
-                		<td>전자기학</td>
-                		<td>1교시 (9:00 ~ 9:50)</td>
-                		<td>
-                			3학점 <span><button type="button" class="btn btn-danger">취소</button></span>
-                		</td>
-                	</tr>
+                		<tr>
+		               		<th>과목명</th>
+		               		<th>시간</th>
+		               		<th>학점</th>
+	               		</tr>
+                	</thead>
+                	<tbody>
+                	</tbody>
                 </table>
                 <div style="text-align: right;">
-                	<button type="button" class="btn btn-primary btn-lg">적용</button>
+                	<button type="button" class="btn btn-primary btn-lg" id="confirmSubjectSchedule">수강신청 완료</button>
                 </div>
             </article>
             <!-- 페이징 처리 -->
@@ -88,31 +77,32 @@
 				    <div class="input-group" style="margin-bottom: 5px;">
 				      <input type="text" class="form-control" placeholder="Search for..." aria-label="Search for...">
 				       <span class="input-group-btn">
-				       <button class="btn btn-secondary" type="button">검색</button>
+				       <button class="btn btn-secondary" type="button" id="searchEvent">검색</button>
 				      </span>
 				    </div>
 			  	</div>
         	</div>
             <article>
-                <table class="table">
+                <table class="table" id="stb">
                 	<thead>
-                	<tr>
-                		<th></th>
-                		<th>과목명</th>
-                		<th>시간</th>
-                		<th>학점</th>
-                	</tr>
+	                	<tr>
+	                		<th></th>
+	                		<th>과목명</th>
+	                		<th>시간</th>
+	                		<th>학점</th>
+	                	</tr>
+                	</thead>
                 	<c:forEach var="item" items="${subjectList}" varStatus="status">
-                		<c:if test="${subjectList[status.index+1] ne null 
-                						and subjectList[status.index].SEQ eq subjectList[status.index+1].SEQ 
-                						and subjectList[status.index].GRP_SEQ eq subjectList[status.index+1].GRP_SEQ}">
-	                		<tr>
-		                		<td><span style=""><input type="checkbox" disabled/>&nbsp;1</span></td>
-		                		<td>전자기학</td>
-		                		<td>1교시 (9:00 ~ 9:50)</td>
-		                		<td>3학점</td>
-	                		</tr>
-                		</c:if>
+                	<tr>
+                		<td>
+                			<input type="checkbox"/>
+                			<input type="hidden" id="orgDayAndGrade" name="orgDayAndGrade" value="${item.ORG_DAYSANDGRADE}">
+                			<input type="hidden" id="orgUniqueSeq" name="orgUniqueSeq" value="${item.UNIQUE_GRP_SEQ}">
+                		</td>
+                		<td id="subname">${item.SUBJECT_NAME }</td>
+                		<td id="dayandgrade">${item.DAYSANDGRADE }</td>
+                		<td id="subgrade">${item.SUBJECT_GRADE }학점</td>
+               		</tr>
                 	</c:forEach>
                 </table>
             </article>
@@ -136,11 +126,136 @@
     </div>
     <script src="/webjars/jquery/3.3.1-2/jquery.min.js"></script>
     <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/js/common.js"></script>
     
     <script type="text/javascript">
-	    $(function () {
-	        console.log("jQuery ready");
+    	
+   		var userList = JSON.parse('${userList}');
+    
+		$(function () {
+			// 페이지 호출 시 내 수강목록 테이블 그려준다.
+			createUserTable();
+			
+			// 페이지 호출 시 수강신청 목록 테이블 그려준다.
 		});
+	    
+		$(document).on('click',':checkbox',function() {
+			var $data = $(this).siblings('#orgDayAndGrade');
+			var compareToTime = $data.val().split(',');
+			
+			if($(this).is(":checked")){
+				for(var i in compareToTime) {
+					for(var j in userList) {
+						if(userList[j].DAYANDGRADE == compareToTime[i]){
+							alert("이미 해당 시간에 수강목록이 존재합니다.");
+							$(this).prop("checked",false);
+							return;
+						}
+					}
+				}
+				
+				// 수간신청 완료되면 호출
+				successEnrolementSubject($(this).siblings('#orgUniqueSeq'), compareToTime);
+			}
+		});
+		
+		// 수강과목 검색
+		$(document).bind('click','#searchEvent',function() {
+			
+		});
+		
+		// 수강신청 완료
+		$(document).bind('click','#confirmSubjectSchedule', function(){
+			
+		});
+		
+		// 현재 유저별 수강목록 들고있는 부분 테이블 그리기
+		function createUserTable() {
+			$.ajax({
+				 url : "/data/searchEnroleUserlist"
+		  		,type : "post"
+		  		,dataType : "json"
+				,success : function(data) {
+					//데이터 기반으로 목록 생성
+					
+					$("#tb tbody").empty();
+					
+					var len = 3;
+					var cancelButton = "<button type='button' class='btn btn-danger' onclick='cancelButtenEvent(this)'>취소</button>";
+
+					for(var i = 0 ; i < data.length; i++){
+						var tr = document.createElement('tr');
+						var uniqueGrpSeq = "<input type='hidden' id='uniqueGrpSeq' value="+data[i].UNIQUE_GRP_SEQ+" />";
+						
+						$(tr).append($(document.createElement('td')).append(data[i].SUBJECT_NAME));
+						$(tr).append($(document.createElement('td')).append(data[i].DAYSANDGRADE));
+						$(tr).append($(document.createElement('td')).append(data[i].SUBJECT_GRADE+'학점' + cancelButton + uniqueGrpSeq));
+						$("#tb tbody").append(tr);
+					}
+				}
+				,exception : function(response) {
+				}
+			});
+		}
+		
+		// 수강취소 선택
+		function cancelButtenEvent(data) {
+			
+			var uniqueGrpSeq = $(data).siblings('#uniqueGrpSeq').val();
+			
+			$.ajax({
+				 url : "/data/removeUserSubject"
+		  		,type : "post"
+		  		,dataType : "json"
+		  		,data: {
+		  			subjectGrpSeq : uniqueGrpSeq
+		  		}
+				,success : function(response) {
+					// 신청과목 삭제 후 체크박스 해제
+					createUserTable();
+					
+					$("#stb").find(":checkbox").each(function(){
+						if(uniqueGrpSeq == $(this).siblings('#orgUniqueSeq')) {
+							$(this).prop("disabled",false);
+							return false;
+						}
+					});
+				}
+				,exception : function(response) {
+					alert("내부시스템 에러 입니다." + response);
+					$(this).prop("disabled",true);
+				}
+			});
+			
+			
+			console.log(uniqueGrpSeq);
+		}
+		
+		// 선택된 과목이 수강신청 완료되면 호출
+		function successEnrolementSubject($data) {
+			// 선택된 수강과목은 유저리스트에 등록되고 수강신청 목록에서 disable 처리
+			$.ajax({
+				 url : "/data/successEnrolementSubject"
+		  		,type : "post"
+		  		,dataType : "json"
+		  		,data: {
+		  			subjectGrpSeq : $data.val()
+		  		}
+				,success : function(response) {
+					createUserTable();
+					$(this).prop("disabled",true);
+				}
+				,exception : function(response) {
+					alert("내부시스템 에러 입니다." + response);
+					$(this).prop("disabled",true);
+				}
+			});
+		}
+		
+		// 탭 이동 (공통)
+	    function onClickScheduleForward(url) {
+	   		commonRedirect(url);
+	    }
 	    
     </script>
 </body>

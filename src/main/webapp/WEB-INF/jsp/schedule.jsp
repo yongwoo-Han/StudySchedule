@@ -26,7 +26,7 @@
 		        <a class="nav-link" href="javascript:onClickScheduleForward('<c:url value='/enrolment'/>')" id="searchEnrolement">수강신청</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link" href="javascript:onClickScheduleForward('<c:url value='/scheduleList'/>')" id="identificationSchedule">개인시간표</a>
+		        <a class="nav-link" href="javascript:onClickScheduleForward('<c:url value='/schedule'/>')" id="identificationSchedule">개인시간표</a>
 		      </li>
 		    </ul>
 		  </div>
@@ -51,12 +51,6 @@
     <script>
     	var userList = JSON.parse('${userList}');
 		$(function() {
-// 			$.each(userList, function(i,v){
-// 				console.log(i+ " , "+v);
-// 			});
-			
-// 			var $tr = document.createElement('tr');
-// 			console.log($tr);
 			drawTableForSchedule();
 		});
 		
@@ -69,13 +63,17 @@
 			var days = 5;
 			var grades = 8;
 			var view = "";
+			
 // 			$("#tb").append() // TR 마지막에 붙히며 1 ~ 8 교시까지 검사하면서 TD를 그린다
 			for(var i = 1; i <= grades ; i++) {
 				var tr = document.createElement('tr');
 				var td = document.createElement('td');
 				$(tr).append($(td).append(i));
+				
 				for(var j = 1; j <= days ; j++) {
 					td = document.createElement('td');
+					
+					// 내 수강목록에 있는 데이터와 8x5 테이블에 일치하는 부분 찾아서 데이터 삽입
 					$.each(userList, function(v,data) {
 						if(data.GRADE == i && data.DAYS == j) {
 							$(td).append(data.SUBJECT_NAME);
