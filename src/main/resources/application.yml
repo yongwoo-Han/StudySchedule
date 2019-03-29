@@ -3,18 +3,17 @@ spring:
     view:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
-  devtools:
-    livereload:
-      enabled: false
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://google/studyschedule?cloudSqlInstance=polar-processor-235700:us-central1:studydbms&socketFactory=com.google.cloud.sql.mysql.SocketFactory
-    username: root
-    password: J4JO8pJn0bzmbj5m#    driver-class-name: com.mysql.cj.jdbc.Driver
+#  devtools:
+#    livereload:
+#      enabled: false
+  datasource:#    driver-class-name: com.mysql.jdbc.Driver
 #    url: jdbc:mysql://localhost:3306/studyschedule?characterEncoding=UTF-8&serverTimezone=UTC
 #    username: root
 #    password: J4JO8pJn0bzmbj5m
-    
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://google/studyschedule?cloudSqlInstance=polar-processor-235700:us-central1:studydbms&socketFactory=com.google.cloud.sql.mysql.SocketFactory
+    username: root
+    password: J4JO8pJn0bzmbj5m
    
 mybatis:
   mapper-locations:

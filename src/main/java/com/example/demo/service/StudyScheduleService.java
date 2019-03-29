@@ -48,6 +48,9 @@ public class StudyScheduleService {
 	 */
 	public void successEnrolementSubject(Map<String, Object> param) {
 		
+		// 기존 수강 과목이 있으면 삭제
+		studyScheduleMapper.removeUserSubjectForBefore(param);
+		
 		param.put("name", "admin"); // 사용자 어드민으로 등록 (임시)
 		studyScheduleMapper.successEnrolementSubject(param);
 	}

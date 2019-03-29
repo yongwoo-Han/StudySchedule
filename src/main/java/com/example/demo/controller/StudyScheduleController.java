@@ -28,8 +28,8 @@ public class StudyScheduleController {
 	@RequestMapping(value = "enrolment")
 	public ModelAndView indexPage(@RequestParam Map<String, Object> param) {
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("subjectList", studyScheduleService.searchSubjectList(param));
-		mav.addObject("userList", new JSONArray(studyScheduleService.searcSubjectForUserList()));
+		mav.addObject("subjectList", new JSONArray(studyScheduleService.searchSubjectList(param)));
+		mav.addObject("userList", new JSONArray(studyScheduleService.searchEnroleUserlist()));
 		return mav;
 	}
 	
@@ -75,5 +75,15 @@ public class StudyScheduleController {
 	@RequestMapping(value = "/data/searchEnroleUserlist")
 	public ResponseEntity<?> searchEnroleUserlist() {
 		return ResponseEntity.ok(studyScheduleService.searchEnroleUserlist());
+	}
+	
+	/**
+	 * 수강목록 검- Ajax
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value = "/data/searchSubjectList")
+	public ResponseEntity<?> searchSubjectList(@RequestParam Map<String, Object> param) {
+		return ResponseEntity.ok(studyScheduleService.searchSubjectList(param));
 	}
 }

@@ -15,4 +15,5 @@ public interface StudyScheduleMapper {
 	
 	public void successEnrolementSubject(Map<String, Object> param);
 	public void removeUserSubject(Map<String, Object> param);
+	public void removeUserSubjectForBefore(Map<String, Object> param);
 }

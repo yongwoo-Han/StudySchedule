@@ -33,7 +33,7 @@
 		</nav>
 	</div>
 	<div class="container">
-		<table class="table table-bordered" style="margin-top: 10px;" id="tb">
+		<table class="table table-bordered" style="margin-top: 10px; table-layout: fixed; border: 1px solid;" id="tb">
 			<tr align="center">
 				<td width="50"></td>
 				<td>월</td>

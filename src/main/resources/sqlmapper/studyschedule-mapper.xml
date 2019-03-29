@@ -34,8 +34,8 @@
 		) AS R
 		WHERE
 			1=1
-			<if test="siteName != null and siteName != ''">
-				SUBJECT_NAME LIKE '%'||#{siteName}||'%'
+			<if test="subjectName != null">
+				AND SUBJECT_NAME LIKE CONCAT(CONCAT('%',#{subjectName}),'%')
 			</if>
 		GROUP BY GRP_SEQ, SUBJECT_NAME, R.SEQ, R.SUBJECT_GRADE
 		ORDER BY SUBJECT_NAME
@@ -74,7 +74,7 @@
 				ELSE '' END AS DAYS
 			FROM H_SUBJECT A JOIN (
 				 SELECT DISTINCT
-					SUBJECT_SEQ, GRP_SEQ, GRADE, DAYS
+					B.SUBJECT_SEQ, GRP_SEQ, GRADE, DAYS
 				FROM
 					H_USER A JOIN H_SCHEDULE B
 				ON
@@ -89,7 +89,21 @@
     </select>
     
     <select id="searcSubjectForUserList" resultType="Map" parameterType="Map">
-    	SELECT * FROM H_USER;
+		SELECT
+			SEQ
+			,DAYS
+			,GRADE
+			,SUBJECT_GRADE
+			,SUBJECT_NAME
+		FROM H_SUBJECT A JOIN (
+			 SELECT DISTINCT
+				B.SUBJECT_SEQ, GRP_SEQ, GRADE, DAYS
+			FROM
+				H_USER A JOIN H_SCHEDULE B
+			ON
+				A.SUBJECT_GRP_SEQ = CONCAT(B.GRP_SEQ, B.SUBJECT_SEQ)
+		) B
+		ON A.SEQ = B.SUBJECT_SEQ
     </select>
     
     <insert id="successEnrolementSubject" parameterType="Map">
@@ -98,11 +112,15 @@
     		SEQ 
     		,NAME
     		,SUBJECT_GRP_SEQ
+    		,SUBJECT_SEQ
+    		,SUBJECT_GRADE
     	) 
     	SELECT
     		COALESCE(MAX(SEQ)+1,1)
     		,#{name}
     		,${subjectGrpSeq}
+    		,${subjectSeq}
+    		,${subjectGrade}
     	FROM
     		H_USER
     </insert>
@@ -110,5 +128,10 @@
     <delete id="removeUserSubject" parameterType="Map">
     	DELETE FROM H_USER WHERE SUBJECT_GRP_SEQ = #{subjectGrpSeq}
     </delete>
+    
+    <delete id="removeUserSubjectForBefore" parameterType="Map">
+    	DELETE FROM H_USER WHERE SUBJECT_SEQ = #{subjectSeq}
+    </delete>
+    
     
 </mapper>

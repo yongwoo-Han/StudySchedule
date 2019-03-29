@@ -75,7 +75,7 @@
         		<h4>수강신청 목록</h4>
         		<div class="col-lg-6 offset-lg-6">
 				    <div class="input-group" style="margin-bottom: 5px;">
-				      <input type="text" class="form-control" placeholder="Search for..." aria-label="Search for...">
+				      <input type="text" class="form-control" placeholder="Search for..." aria-label="Search for..." id="searchText">
 				       <span class="input-group-btn">
 				       <button class="btn btn-secondary" type="button" id="searchEvent">검색</button>
 				      </span>
@@ -92,18 +92,11 @@
 	                		<th>학점</th>
 	                	</tr>
                 	</thead>
-                	<c:forEach var="item" items="${subjectList}" varStatus="status">
-                	<tr>
-                		<td>
-                			<input type="checkbox"/>
-                			<input type="hidden" id="orgDayAndGrade" name="orgDayAndGrade" value="${item.ORG_DAYSANDGRADE}">
-                			<input type="hidden" id="orgUniqueSeq" name="orgUniqueSeq" value="${item.UNIQUE_GRP_SEQ}">
-                		</td>
-                		<td id="subname">${item.SUBJECT_NAME }</td>
-                		<td id="dayandgrade">${item.DAYSANDGRADE }</td>
-                		<td id="subgrade">${item.SUBJECT_GRADE }학점</td>
-               		</tr>
-                	</c:forEach>
+                	<tbody>
+                	</tbody>
+<%--                 	<c:forEach var="item" items="${subjectList}" varStatus="status"> --%>
+                	
+<%--                 	</c:forEach> --%>
                 </table>
             </article>
             <!-- 페이징 처리 -->
@@ -123,6 +116,22 @@
 			  </ul>
 			</nav>
         </section>
+        
+        <!-- 수강 테이블 생성 위한 -->
+        <table style="display:none;" id="clonetable">
+        	<tr>
+          		<td>
+          			<input type="checkbox"/>
+          			<input type="hidden" id="orgDayAndGrade" name="orgDayAndGrade" value="">
+          			<input type="hidden" id="orgUniqueSeq" name="orgUniqueSeq" value="">
+          			<input type="hidden" id="orgSubgrade" name="orgSubgrade" value="">
+          			<input type="hidden" id="subjectSeq" name="subjectSeq" value="">
+          		</td>
+          		<td id="subname"></td>
+          		<td id="dayandgrade"></td>
+          		<td id="subgrade"></td>
+      		</tr>
+        </table>
     </div>
     <script src="/webjars/jquery/3.3.1-2/jquery.min.js"></script>
     <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -131,12 +140,17 @@
     <script type="text/javascript">
     	
    		var userList = JSON.parse('${userList}');
+   		var subjectList = JSON.parse('${subjectList}');
+   		
+   		var maxGrade = 21; // 최대 21학점
+   		var minGrade = 18; // 최소 18학점
     
 		$(function () {
 			// 페이지 호출 시 내 수강목록 테이블 그려준다.
 			createUserTable();
 			
 			// 페이지 호출 시 수강신청 목록 테이블 그려준다.
+			creatSubjectTable();
 		});
 	    
 		$(document).on('click',':checkbox',function() {
@@ -144,30 +158,75 @@
 			var compareToTime = $data.val().split(',');
 			
 			if($(this).is(":checked")){
-				for(var i in compareToTime) {
-					for(var j in userList) {
-						if(userList[j].DAYANDGRADE == compareToTime[i]){
-							alert("이미 해당 시간에 수강목록이 존재합니다.");
-							$(this).prop("checked",false);
-							return;
-						}
-					}
+				
+				if(!validation($(this), compareToTime)) {
+					return;
 				}
 				
 				// 수간신청 완료되면 호출
-				successEnrolementSubject($(this).siblings('#orgUniqueSeq'), compareToTime);
+				successEnrolementSubject($(this), compareToTime);
 			}
 		});
 		
 		// 수강과목 검색
-		$(document).bind('click','#searchEvent',function() {
+		$(document).on('keydown, click','#searchEvent',function(key) {
+			
+			var searchText = $('#searchText').val();
+			
+			$.ajax({
+				 url : "/data/searchSubjectList"
+		  		,type : "post"
+		  		,dataType : "json"
+		  		,data : {
+		  			subjectName : searchText
+		  		}
+				,success : function(data) {
+					
+					//데이터 기반으로 목록 생성
+					subjectList = data;
+					creatSubjectTable();
+				}
+				,exception : function(response) {
+				}
+			});
 			
 		});
 		
 		// 수강신청 완료
-		$(document).bind('click','#confirmSubjectSchedule', function(){
+		$(document).on('click','#confirmSubjectSchedule', function(){
 			
 		});
+		
+		// 수강신청 목록 테이블 생성
+		function creatSubjectTable() {
+			
+			$("#stb tbody").empty();
+			
+			$(subjectList).each(function(i, data){
+				var table = $('#clonetable').clone();
+				var tr = $(table).find('tr');
+				
+				$(tr).find('#orgDayAndGrade').val(data.ORG_DAYSANDGRADE);
+				$(tr).find('#orgUniqueSeq').val(data.UNIQUE_GRP_SEQ);
+				$(tr).find('#orgSubgrade').val(data.SUBJECT_GRADE);
+				$(tr).find('#subjectSeq').val(data.SEQ);
+				
+				$(tr).find('#subname').html(data.SUBJECT_NAME);
+				$(tr).find('#dayandgrade').html(data.DAYSANDGRADE);
+				$(tr).find('#subgrade').html(data.SUBJECT_GRADE+'학점');
+				
+				// 체크박스 선택
+				$(userList).each(function(j, subData){
+					if(subData.UNIQUE_GRP_SEQ == data.UNIQUE_GRP_SEQ){
+						$(tr).find(':checkbox').prop("checked",true);
+						$(tr).find(':checkbox').prop("disabled",true);
+						return false;
+					}
+				});
+				
+          		$('#stb tbody').append($(table).find('tr'));
+			});
+		}
 		
 		// 현재 유저별 수강목록 들고있는 부분 테이블 그리기
 		function createUserTable() {
@@ -178,6 +237,7 @@
 				,success : function(data) {
 					//데이터 기반으로 목록 생성
 					
+					userList = data;
 					$("#tb tbody").empty();
 					
 					var len = 3;
@@ -214,9 +274,10 @@
 					// 신청과목 삭제 후 체크박스 해제
 					createUserTable();
 					
-					$("#stb").find(":checkbox").each(function(){
-						if(uniqueGrpSeq == $(this).siblings('#orgUniqueSeq')) {
+					$("#stb").find("input:checked").each(function(){
+						if(uniqueGrpSeq == $(this).siblings('#orgUniqueSeq').val()) {
 							$(this).prop("disabled",false);
+							$(this).prop("checked",false);
 							return false;
 						}
 					});
@@ -239,17 +300,74 @@
 		  		,type : "post"
 		  		,dataType : "json"
 		  		,data: {
-		  			subjectGrpSeq : $data.val()
+		  			subjectGrpSeq : $data.siblings('#orgUniqueSeq').val()
+		  			,subjectGrade : $data.siblings('#orgSubgrade').val()
+		  			,subjectSeq   : $data.siblings('#subjectSeq').val()
 		  		}
 				,success : function(response) {
 					createUserTable();
-					$(this).prop("disabled",true);
+					$data.prop("disabled",true);
 				}
 				,exception : function(response) {
 					alert("내부시스템 에러 입니다." + response);
-					$(this).prop("disabled",true);
+					$data.prop("disabled",true);
 				}
 			});
+		}
+		
+		// validation 
+		function validation($data, compareToTime) {
+			
+			var subjectSeq = $data.siblings('#subjectSeq').val();
+			var removeUniqueCode = "";			
+			var totalGrade = 0;
+			var subjectList = '';
+			var confirmFlag = false;
+			
+			for(var i in userList) {
+				totalGrade += userList[i].SUBJECT_GRADE;
+				
+				// 같은 과목이 있는지 검사
+				if(userList[i].SEQ == subjectSeq) {
+					if(!confirm('수강목록에 같은 과목이 존재합니다. 시간대를 변경하겠습니까?')){
+						return false;
+					}else{
+						removeUniqueCode = userList[i].UNIQUE_GRP_SEQ;
+						confirmFlag = true;
+						break;
+					}
+				}
+			}
+			
+			// 21학점을 초과하는지 검사
+			if(totalGrade >= maxGrade) {
+				alert('21학점을 초과할 수 없습니다.');
+				return false;
+			}
+			
+			for(var i in compareToTime) {
+				for(var j in userList) {
+					if(userList[j].ORG_DAYSANDGRADE.indexOf(compareToTime[i]) > -1){
+						alert("이미 해당 시간에 수강목록이 존재합니다.");
+						$data.prop("checked",false);
+						return false;
+					}
+				}
+			}
+			
+			// 수강 변경 건에 대해 기존에 체크되어 있던 부분 해지
+			if(confirmFlag) {
+				$("#stb").find("input:checked").each(function(i, data){
+					if(removeUniqueCode == $(this).siblings('#orgUniqueSeq').val()) {
+						$(this).prop("checked",false);
+						$(this).prop("disabled",false);
+						return false;
+					}
+				});
+				
+			}
+			
+			return true;
 		}
 		
 		// 탭 이동 (공통)
