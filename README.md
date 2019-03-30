@@ -1,10 +1,10 @@
 수강신청 서비스 개발
 
-기술 스택
-Back-End : Google App-Engine(WAS : Jetty), Springboot 2.1, Mybatis, Cloud SQL(MySQL 5.7)
+기술 스택<br>
+Back-End : Google App-Engine(WAS : Jetty), Springboot 2.1, Mybatis, Cloud SQL(MySQL 5.7)<br>
 Front-End : JQuery, BootStrap, HTML5, CSS
 
-화면 구성
-- Home 화면
-- 수강신청 화면
-- 개인시간표
+화면 구성<br>
+- Home 화면<br>
+- 수강신청 화면<br>
+- 개인시간표<br>
