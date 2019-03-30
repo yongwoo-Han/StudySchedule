@@ -20,7 +20,7 @@
 		  <div class="collapse navbar-collapse" id="navbarNav">
 		    <ul class="navbar-nav">
 		      <li class="nav-item">
-		        <a class="nav-link" href="#">Home</a>
+		        <a class="nav-link" href="javascript:onClickScheduleForward('<c:url value='/'/>')" >Home</a>
 		      </li>
 		      <li class="nav-item">
 		        <a class="nav-link" href="javascript:onClickScheduleForward('<c:url value='/enrolment'/>')" id="searchEnrolement">수강신청</a>
@@ -76,6 +76,7 @@
 					// 내 수강목록에 있는 데이터와 8x5 테이블에 일치하는 부분 찾아서 데이터 삽입
 					$.each(userList, function(v,data) {
 						if(data.GRADE == i && data.DAYS == j) {
+							$(td).css("background",data.COLOR);
 							$(td).append(data.SUBJECT_NAME);
 							return false;
 						}

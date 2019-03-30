@@ -13,23 +13,33 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.config.ConstType;
 import com.example.demo.service.StudyScheduleService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 
 @Controller
 public class StudyScheduleController {
 	
 	@Autowired
 	private StudyScheduleService studyScheduleService;
-
-	@RequestMapping(value = "/")
-	public String hello() {
-		return "enrolment";
+	
+	@RequestMapping(value = {"/"})
+	public ModelAndView HomePage(@RequestParam Map<String, Object> param) {
+		ModelAndView mav = new ModelAndView("index");
+		return mav;
 	}
 	
-	@RequestMapping(value = "enrolment")
+	@RequestMapping(value = {"enrolment"})
 	public ModelAndView indexPage(@RequestParam Map<String, Object> param) {
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("subjectList", new JSONArray(studyScheduleService.searchSubjectList(param)));
-		mav.addObject("userList", new JSONArray(studyScheduleService.searchEnroleUserlist()));
+		PageHelper.startPage(1, 10);
+		Page<Map<String,Object>> searchSubjectList = studyScheduleService.searchSubjectList(param);
+		Page<Map<String,Object>> searchEnroleUserlist = studyScheduleService.searchEnroleUserlist();
+		
+		mav.addObject("subjectList", new JSONArray(searchSubjectList));
+		mav.addObject("userList", new JSONArray(searchEnroleUserlist));
+		
+		mav.addObject("subList", searchSubjectList);
+		mav.addObject("subPageNumber", searchSubjectList.getPages());
 		return mav;
 	}
 	
@@ -39,6 +49,13 @@ public class StudyScheduleController {
 		System.out.println(studyScheduleService.searcSubjectForUserList());
 		mav.addObject("userList", new JSONArray(studyScheduleService.searcSubjectForUserList()));
 		return mav;
+	}
+	
+	@RequestMapping(value = "/page/enrolment")
+	public ResponseEntity<?> pagingEnrolment(@RequestParam Map<String, Object> param) {
+		PageHelper.startPage(Integer.parseInt((String)param.get("pageNum")), 10);
+		Page<Map<String,Object>> searchSubjectList = studyScheduleService.searchSubjectList(param);
+		return ResponseEntity.ok(searchSubjectList);
 	}
 	
 	@RequestMapping(value = "/data/successEnrolementSubject")
@@ -78,12 +95,19 @@ public class StudyScheduleController {
 	}
 	
 	/**
-	 * 수강목록 검- Ajax
+	 * 수강목록 검사 - Ajax
 	 * @param param
 	 * @return
 	 */
 	@RequestMapping(value = "/data/searchSubjectList")
 	public ResponseEntity<?> searchSubjectList(@RequestParam Map<String, Object> param) {
-		return ResponseEntity.ok(studyScheduleService.searchSubjectList(param));
+		Map<String, Object> resultData = new HashMap<>();
+		
+		PageHelper.startPage(1, 10);
+		Page<Map<String,Object>> searchSubjectList = studyScheduleService.searchSubjectList(param);
+		
+		resultData.put("subjectList", searchSubjectList);
+		resultData.put("totalPageNum", searchSubjectList.getPages());
+		return ResponseEntity.ok(resultData);
 	}
 }

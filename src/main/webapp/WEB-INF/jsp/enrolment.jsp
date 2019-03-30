@@ -24,7 +24,7 @@
 		  <div class="collapse navbar-collapse" id="navbarNav">
 		    <ul class="navbar-nav">
 		      <li class="nav-item">
-		        <a class="nav-link" href="#">Home</a>
+		        <a class="nav-link" href="javascript:onClickScheduleForward('<c:url value='/'/>')" >Home</a>
 		      </li>
 		      <li class="nav-item">
 		        <a class="nav-link" href="javascript:onClickScheduleForward('<c:url value='/enrolment'/>')" id="searchEnrolement">수강신청</a>
@@ -49,26 +49,11 @@
                 	<tbody>
                 	</tbody>
                 </table>
-                <div style="text-align: right;">
+                <div style="text-align: right;" id="totalUserCount">
+                	현재 신청 학점 : <span></span>
                 	<button type="button" class="btn btn-primary btn-lg" id="confirmSubjectSchedule">수강신청 완료</button>
                 </div>
             </article>
-            <!-- 페이징 처리 -->
-            <nav aria-label="...">
-			  <ul class="pagination justify-content-center">
-			    <li class="page-item disabled">
-			      <a class="page-link" href="#" tabindex="-1">Previous</a>
-			    </li>
-			    <li class="page-item"><a class="page-link" href="#">1</a></li>
-			    <li class="page-item active">
-			      <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-			    </li>
-			    <li class="page-item"><a class="page-link" href="#">3</a></li>
-			    <li class="page-item">
-			      <a class="page-link" href="#">Next</a>
-			    </li>
-			  </ul>
-			</nav>
         </section>
         <section>
         	<div>
@@ -94,25 +79,20 @@
                 	</thead>
                 	<tbody>
                 	</tbody>
-<%--                 	<c:forEach var="item" items="${subjectList}" varStatus="status"> --%>
-                	
-<%--                 	</c:forEach> --%>
                 </table>
             </article>
             <!-- 페이징 처리 -->
             <nav aria-label="...">
-			  <ul class="pagination justify-content-center">
-			    <li class="page-item disabled">
-			      <a class="page-link" href="#" tabindex="-1">Previous</a>
-			    </li>
-			    <li class="page-item"><a class="page-link" href="#">1</a></li>
-			    <li class="page-item active">
-			      <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-			    </li>
-			    <li class="page-item"><a class="page-link" href="#">3</a></li>
-			    <li class="page-item">
-			      <a class="page-link" href="#">Next</a>
-			    </li>
+			  <ul class="pagination justify-content-center" id="pagingul">
+<!-- 			    <li class="page-item disabled"> -->
+<!-- 			      <a class="page-link" href="#" tabindex="-1" id="">Previous</a> -->
+<!-- 			    </li> -->
+<%-- 			    <c:forEach var="item" items="${subList}" begin="1" end="${subPageNumber }" varStatus="status"> --%>
+<%-- 				    <li class="page-item"><a class="page-link" href="#">${status.count }</a></li> --%>
+<%-- 			    </c:forEach> --%>
+<!-- 			    <li class="page-item"> -->
+<!-- 			      <a class="page-link" href="#">Next</a> -->
+<!-- 			    </li> -->
 			  </ul>
 			</nav>
         </section>
@@ -132,6 +112,11 @@
           		<td id="subgrade"></td>
       		</tr>
         </table>
+        
+        <!-- 페이징 처리위한 Clone ul -->
+        <ul style="display:none;" id="cloneul">
+        	<li class="page-item"><a class="page-link" href="#"></a></li>
+        </ul>
     </div>
     <script src="/webjars/jquery/3.3.1-2/jquery.min.js"></script>
     <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -141,6 +126,9 @@
     	
    		var userList = JSON.parse('${userList}');
    		var subjectList = JSON.parse('${subjectList}');
+   		var totalPageNum = '${subPageNumber}';
+   		
+   		var userTotalClassCount = 0; // 현재 수강신청한 학점
    		
    		var maxGrade = 21; // 최대 21학점
    		var minGrade = 18; // 최소 18학점
@@ -151,6 +139,9 @@
 			
 			// 페이지 호출 시 수강신청 목록 테이블 그려준다.
 			creatSubjectTable();
+			
+			// 페이징 처리
+			createPaging(totalPageNum);
 		});
 	    
 		$(document).on('click',':checkbox',function() {
@@ -169,8 +160,46 @@
 		});
 		
 		// 수강과목 검색
-		$(document).on('keydown, click','#searchEvent',function(key) {
+		$(document).on('click','#searchEvent',function() {
+			searchTextForSubjectList();
+		});
+		
+		// 엔터키 누르면 검색
+		$(document).on('keydown','#searchText', function(key){
+			if(key.keyCode == 13) {
+				searchTextForSubjectList();
+			}
+		});
+		
+		// 수강신청 완료
+		$(document).on('click','#confirmSubjectSchedule', function(){
 			
+			// 최소 18학점 이상이고 21학점을 넘길 수 없다.
+			if(userTotalClassCount < minGrade || userTotalClassCount > maxGrade) {
+				return alert("수강신청 학점은 18학점 미만이거나 21학점을 초과할 수 없습니다.");
+			}
+
+			if(!confirm("수강신청을 완료하시겠습니까? 완료하면 수강신청을 더이상 진행할 수 없습니다.")){
+				return;
+			}
+			
+			// 수강신청 완료를 누르면 수강신청 할 수 없도록 한다.
+			$("#stb").find(":checkbox").each(function() {
+				$(this).prop("disabled", true);
+			});
+			
+			alert("수강신청이 완료되었습니다.");
+			onClickScheduleForward('/');
+			
+		});
+		
+		// 페이징 처리
+		$(document).on('click','.page-link',function(){
+			dynamicPagingSet($(this).text());
+		});
+		
+		// 수강목록 검색
+		function searchTextForSubjectList() {
 			var searchText = $('#searchText').val();
 			
 			$.ajax({
@@ -183,19 +212,15 @@
 				,success : function(data) {
 					
 					//데이터 기반으로 목록 생성
-					subjectList = data;
+					subjectList = data.subjectList;
+					totalNum = data.totalPageNum;
 					creatSubjectTable();
+					createPaging(totalNum);
 				}
 				,exception : function(response) {
 				}
 			});
-			
-		});
-		
-		// 수강신청 완료
-		$(document).on('click','#confirmSubjectSchedule', function(){
-			
-		});
+		}
 		
 		// 수강신청 목록 테이블 생성
 		function creatSubjectTable() {
@@ -228,6 +253,7 @@
 			});
 		}
 		
+		
 		// 현재 유저별 수강목록 들고있는 부분 테이블 그리기
 		function createUserTable() {
 			$.ajax({
@@ -237,13 +263,16 @@
 				,success : function(data) {
 					//데이터 기반으로 목록 생성
 					
+					userTotalClassCount = 0;
 					userList = data;
 					$("#tb tbody").empty();
 					
-					var len = 3;
 					var cancelButton = "<button type='button' class='btn btn-danger' onclick='cancelButtenEvent(this)'>취소</button>";
 
 					for(var i = 0 ; i < data.length; i++){
+						
+						userTotalClassCount += data[i].SUBJECT_GRADE;
+						
 						var tr = document.createElement('tr');
 						var uniqueGrpSeq = "<input type='hidden' id='uniqueGrpSeq' value="+data[i].UNIQUE_GRP_SEQ+" />";
 						
@@ -252,6 +281,8 @@
 						$(tr).append($(document.createElement('td')).append(data[i].SUBJECT_GRADE+'학점' + cancelButton + uniqueGrpSeq));
 						$("#tb tbody").append(tr);
 					}
+					
+					$("#totalUserCount").find("span").text(userTotalClassCount);
 				}
 				,exception : function(response) {
 				}
@@ -290,6 +321,19 @@
 			
 			
 			console.log(uniqueGrpSeq);
+		}
+		
+		// 페이징 생성
+		function createPaging(totalPageNum) {
+			
+			$("#pagingul").empty();
+			
+			var ul = $("#cloneul").clone();
+			for(var i = 1 ; i <= totalPageNum ; i++) {
+				$(ul).find("a").text(i);
+				$("#pagingul").append($(ul).html());
+			}
+				
 		}
 		
 		// 선택된 과목이 수강신청 완료되면 호출
@@ -368,6 +412,25 @@
 			}
 			
 			return true;
+		}
+		
+		// 검색 후에 동적 페이징 처리
+		function dynamicPagingSet(pageNum) {
+			$.ajax({
+				 url : "/page/enrolment"
+		  		,type : "get"
+		  		,dataType : "json"
+		  		,data:{
+		  			pageNum : pageNum
+		  		}
+				,success : function(data) {
+					//데이터 기반으로 목록 생성
+					subjectList = data;
+					creatSubjectTable();
+				}
+				,exception : function(response) {
+				}
+			});
 		}
 		
 		// 탭 이동 (공통)

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.mapper.StudyScheduleMapper;
+import com.github.pagehelper.Page;
 
 @Service
 public class StudyScheduleService {
@@ -17,7 +18,7 @@ public class StudyScheduleService {
 	/**
 	 * 과목 리스트
 	 */
-	public List<Map<String, Object>> searchSubjectList(Map<String, Object> param) {
+	public Page<Map<String, Object>> searchSubjectList(Map<String, Object> param) {
 		return studyScheduleMapper.searchSubjectList(param);
 	}
 	
@@ -39,7 +40,7 @@ public class StudyScheduleService {
 	 * 유저 수강목록
 	 * @return
 	 */
-	public List<Map<String, Object>> searchEnroleUserlist() {
+	public Page<Map<String, Object>> searchEnroleUserlist() {
 		return studyScheduleMapper.searchEnroleUserlist();
 	}
 	
